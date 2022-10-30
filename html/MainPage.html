@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/MainPageStyle.css">
+    <script type="text/javascript" src="../js/Validation.js"></script>
+    <script type="text/javascript" src="../js/Notification.js"></script>
+
+</head>
+
+<body>
+<div class="row box">
+    <div class="inner">
+        <h1>Connect</h1>
+        <hr style="width:100%; text-align: left; margin-left: 0">
+        <h3>Login into your Student or Administrator account.</h3>
+        <p>Enter your User ID & password.</p>
+        <form id="loginForm" action="../php/signIn.php" method="post">
+            <div class="input-group">
+                <input class="input-text" id="userId" name="userId" type="text" required onfocusout="validateID()" placeholder="Enter your User ID."/>
+            </div>
+            <div class="input-group">
+                <input class="input-text" id="password" name="password" type="password" required onfocusout="validatePass()" placeholder="Enter your User Password."/>
+            </div>
+            <button type="submit" name="login_btn" onclick="showToast()">Login</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="loginAttemptToast" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body">
+          <div class="spinner-border spinner-border-sm text-light" role="status">
+          </div>
+        Attempting to Login
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+</body>
+</html>
