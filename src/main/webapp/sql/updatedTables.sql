@@ -1,27 +1,18 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 4.9.5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 14, 2022 at 09:46 PM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 8.1.10
+-- Host: localhost:8889
+-- Generation Time: Nov 05, 2022 at 02:30 AM
+-- Server version: 5.7.30
+-- PHP Version: 7.4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `soen387_school`
 --
-CREATE DATABASE IF NOT EXISTS `soen387_school` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `soen387_school`;
 
 -- --------------------------------------------------------
 
@@ -36,7 +27,7 @@ CREATE TABLE `courses` (
   `room` varchar(255) NOT NULL,
   `startDate` date NOT NULL,
   `endDate` date NOT NULL,
-  `days` varchar(255) NOT NULL,
+  `days` varchar(150) DEFAULT NULL,
   `time` time NOT NULL,
   `instructor` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -46,16 +37,19 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`courseCode`, `title`, `semester`, `room`, `startDate`, `endDate`, `days`, `time`, `instructor`) VALUES
-('COMP101', 'Intro to Computer Science', 'FALL-2022', 'H725', '2022-05-01', '2022-08-31', 'Friday', '18:00:00', 'Lisa E'),
-('COMP232', 'Mathematics for Computer Science', 'FALL-2022', 'H640', '2022-10-09', '2022-12-31', 'Monday', '08:30:00', 'Jane A'),
-('COMP233', 'Probability and Statistics for Computer Science', 'FALL-2022', 'H543', '2022-10-09', '2022-12-31', 'Monday', '19:30:10', 'Samuel J'),
-('COMP248', 'Object‑Oriented Programming I ', 'FALL-2022', 'H843', '2022-10-09', '2022-12-31', 'Tuesday', '10:30:00', 'Richard J'),
-('COMP326', 'Computer Architecture', 'FALL-2022', 'H925', '2022-10-09', '2022-12-31', 'Wednesday', '10:30:00', 'Richard J'),
-('COMP333', 'Data Analytics', 'FALL-2022', 'H525', '2022-10-09', '2022-12-31', 'Wednesday', '13:00:00', 'Matthew R'),
-('COMP335', 'Introduction to Theoretical Computer Science', 'FALL-2022', 'H605', '2022-10-09', '2022-12-31', 'Friday', '14:00:00', 'Allison D'),
-('COMP346', 'Operating Systems', 'SUMMER2-2023', 'H125', '2023-06-01', '2023-08-31', 'Thursday', '17:00:00', 'Elisa K.'),
-('COMP348', 'Principles of Programming Languages', 'SUMMER1-2023', 'H725', '2023-05-01', '2023-08-31', 'Friday', '18:00:00', 'Lisa E'),
-('COMP352', 'Data Structures and Algorithms', 'SUMMER1-2023', 'H925', '2023-05-01', '2023-08-31', 'Thursday', '16:00:00', 'Rebecca MJ');
+('comp090', 'Software imaging', 'FALL-2022', 'h222', '2022-10-09', '2022-12-31', 'Tuesday', '12:03:00', 'gg'),
+('comp111', 'Business logic', 'SUMMER2-2023', 'h666', '2023-06-01', '2023-08-31', 'Wednesday', '12:22:00', 'bb'),
+('comp123', 'testing QA', 'SUMMER1-2023', 'h555', '2023-05-01', '2023-08-31', 'Tuesday', '12:22:00', 'me'),
+('comp222', 'Data Gateway', 'SUMMER2-2023', 'h999', '2023-06-01', '2023-08-31', 'Monday', '12:22:00', 'ff'),
+('COMP232', 'Mathematics for Computer Science', 'WINTER-2023', 'H640', '2023-01-05', '2023-04-30', '20', '08:30:00', 'Jane A'),
+('COMP233', 'Probability and Statistics for Computer Science', 'WINTER-2023', 'H543', '2023-01-05', '2023-04-30', '32', '19:30:10', 'Samuel J'),
+('COMP248', 'Object‑Oriented Programming I ', 'WINTER-2023', 'H843', '2023-01-05', '2023-04-30', '42', '10:30:00', 'Richard J'),
+('COMP333', 'Data Analytics', 'WINTER-2023', 'H525', '2023-01-05', '2023-04-30', '45', '13:00:00', 'Matthew R'),
+('COMP335', 'Introduction to Theoretical Computer Science', 'WINTER-2023', 'H605', '2023-01-05', '2023-04-30', '12', '14:00:00', 'Allison D'),
+('COMP345', 'Advanced Programming', 'WINTER-2023', 'h938', '2023-01-05', '2023-04-30', 'Monday', '12:22:00', 'hassan'),
+('COMP890', 'Information Test', 'WINTER-2023', 'H333', '2023-01-05', '2023-04-30', '20', '08:30:10', 'Matt'),
+('COMP998', 'Software analysis', 'FALL-2022', 'h543', '2022-10-09', '2022-12-31', 'Tuesday', '12:33:00', 'Hassa'),
+('COMP999', 'Data Validation', 'FALL-2022', 'H444', '2022-10-09', '2022-12-31', 'Thursday', '12:22:00', 'Hassan');
 
 -- --------------------------------------------------------
 
@@ -73,15 +67,19 @@ CREATE TABLE `student_courses` (
 --
 
 INSERT INTO `student_courses` (`id`, `courseCode`) VALUES
+(4, 'COMP090'),
+(5, 'COMP111'),
+(5, 'COMP123'),
 (4, 'COMP232'),
 (4, 'COMP233'),
-(4, 'COMP248'),
-(4, 'COMP326'),
+(5, 'COMP233'),
+(6, 'COMP233'),
+(6, 'COMP248'),
 (4, 'COMP333'),
-(4, 'COMP348'),
-(4, 'COMP352'),
-(6, 'COMP232'),
-(6, 'COMP333');
+(5, 'COMP333'),
+(6, 'COMP333'),
+(4, 'COMP890'),
+(4, 'COMP999');
 
 -- --------------------------------------------------------
 
@@ -157,8 +155,4 @@ ALTER TABLE `user`
 ALTER TABLE `student_courses`
   ADD CONSTRAINT `student_courses_courseCode_FK` FOREIGN KEY (`courseCode`) REFERENCES `courses` (`courseCode`) ON UPDATE CASCADE,
   ADD CONSTRAINT `student_courses_id_FK` FOREIGN KEY (`id`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
-COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

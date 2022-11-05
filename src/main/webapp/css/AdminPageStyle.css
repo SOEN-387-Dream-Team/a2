@@ -1,0 +1,52 @@
+body {
+    overflow-y : scroll;
+    background-color: white;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.form-popup {
+    display: none;
+    margin: auto;
+    border: 3px solid black;
+    padding: 10px 5px 10px 15px;
+    height : auto;
+}
+
+.box {
+    background-color: #e3f0fd;
+    margin: 20px auto;
+    min-height: 200px;
+    width: 600px;
+    border: 1px darkgrey;
+}
+
+.inner {
+    text-align: Left;
+    padding: 50px 30px 60px;
+    box-shadow: 3px 1.732px 10px 0 rgba(0, 0, 0, 0.063);
+}
+
+h1, h2{
+    color: darkblue;
+}
+
+button {
+    background-color: lightgray;
+    border: 1px solid black;
+    color: royalblue;
+    padding: 10px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    float: bottom;
+}
+
+button:hover {
+    background-color: dimgray;
+}
+
+
