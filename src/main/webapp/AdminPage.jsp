@@ -3,21 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Administrator Options</title>
-    <link rel="stylesheet" href="../css/AdminPageStyle.css">
-    <script type="text/javascript" src="../js/AdminOptions.js"></script>
-    <script type="text/javascript" src="../js/Validation.js"></script>
+    <link rel="stylesheet" href="css/AdminPageStyle.css">
+    <script type="text/javascript" src="js/AdminOptions.js"></script>
+    <script type="text/javascript" src="js/Validation.js"></script>
 </head>
 <!--Navigation bar with bootstrap header -->
-<?php
-if(!isset($_SESSION)) {
-  session_start();
-}
-include '../php/header.php';
-include '../php/navbar.php';
-if ($_SESSION['user']['isAdmin'] === 0 or $_SESSION['loggedIn'] === false) {
-  header("Location: ../php/error.php");
-}
-?>
+
 <body>
 <!--main page-->
 <div class="box">

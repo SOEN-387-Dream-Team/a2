@@ -17,7 +17,7 @@
         <hr style="width:100%; text-align: left; margin-left: 0">
         <h3>Login into your Student or Administrator account.</h3>
         <p>Enter your User ID & password.</p>
-        <form id="loginForm" action="SignIn.jsp" method="post">
+        <form method="POST" action="${pageContext.request.contextPath}/login" id="loginForm">
             <div class="input-group">
                 <input class="input-text" id="userId" name="userId" type="text" required onfocusout="validateID()" placeholder="Enter your User ID."/>
             </div>
