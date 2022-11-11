@@ -9,7 +9,6 @@ public interface UserDataMapper {
     void findEnrolledClasses(User student) throws DataMapperException;
     void findEnrolledClasses(User student, String semester) throws DataMapperException;
     void findCourseStudents(Course course) throws DataMapperException;
-    void isAdmin(User user) throws DataMapperException;
     void findUnenrolledClasses(User student) throws DataMapperException;
-    void createUser(User user) throws DataMapperException;
+    int createUser(User user) throws DataMapperException;
 }
