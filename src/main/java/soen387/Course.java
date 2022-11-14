@@ -112,4 +112,19 @@ public class Course
     public void setInstructor(String instructor) {
         this.instructor = instructor;
     }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseCode='" + courseCode + '\'' +
+                ", title='" + title + '\'' +
+                ", semester='" + semester + '\'' +
+                ", room='" + room + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", days='" + days + '\'' +
+                ", time='" + time + '\'' +
+                ", instructor='" + instructor + '\'' +
+                '}';
+    }
 }
