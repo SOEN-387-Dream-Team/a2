@@ -14,7 +14,7 @@ import static java.lang.System.out;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID =  1;
     private LoginDao loginDao;
 
     public void init() {
@@ -30,15 +30,20 @@ public class LoginServlet extends HttpServlet {
         LoginBean loginBean = new LoginBean();
         loginBean.setUsername(username);
         loginBean.setPassword(password);
-
+        HttpSession session = request.getSession();
         try {
-            if (loginDao.validate(loginBean)) {
-                HttpSession session = request.getSession();
+            if (loginDao.getUserStatus(loginBean) == 0) {
                 session.setAttribute("id",username);
+                session.setAttribute("isAdmin","false");
+                response.sendRedirect("StudentPage.jsp");
+            }
+            else if (loginDao.getUserStatus(loginBean) == 1) {
+                session.setAttribute("id",username);
+                session.setAttribute("isAdmin","true");
                 response.sendRedirect("AdminPage.jsp");
             }
             else {
-                out.println("Failed to connect");
+                response.sendRedirect("MainPage.jsp");
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

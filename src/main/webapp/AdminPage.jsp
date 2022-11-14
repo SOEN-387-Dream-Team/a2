@@ -8,7 +8,13 @@
     <script type="text/javascript" src="js/Validation.js"></script>
 </head>
 <!--Navigation bar with bootstrap header -->
-
+<%
+    if (session.getAttribute("id") == null || session.getAttribute("isAdmin").equals("false"))
+    {
+        session.invalidate();
+        response.sendRedirect("MainPage.jsp");
+    }
+%>
 <body>
 <!--main page-->
 <div class="box">

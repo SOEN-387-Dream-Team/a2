@@ -11,20 +11,18 @@
             background-color: #1e90ff;
         }
     </style>
-    <link rel="stylesheet" href="../css/StudentPageStyle.css">
-    <script type="text/javascript" src="../js/StudentOption.js"></script>
-    <script type="text/javascript" src="../js/Validation.js"></script>
+    <link rel="stylesheet" href="css/StudentPageStyle.css">
+    <script type="text/javascript" src="js/StudentOption.js"></script>
+    <script type="text/javascript" src="js/Validation.js"></script>
 </head>
-<?php
-if(!isset($_SESSION)) {
-  session_start();
-}
-include '../php/header.php';
-include '../php/navbar.php';
-if ($_SESSION['user']['isAdmin'] === 1 or $_SESSION['loggedIn'] === false) {
-  header("Location: ../php/error.php");
-}
-?>
+
+<%
+    if (session.getAttribute("id") == null || session.getAttribute("isAdmin").equals("true"))
+    {
+        session.invalidate();
+        response.sendRedirect("MainPage.jsp");
+    }
+%>
 
 <body>
 <div class="box">

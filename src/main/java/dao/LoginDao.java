@@ -10,10 +10,10 @@ import bean.LoginBean;
 
 public class LoginDao {
 
-    public boolean validate(LoginBean loginBean) throws ClassNotFoundException {
-        boolean status = false;
+    public int getUserStatus(LoginBean loginBean) throws ClassNotFoundException {
+        int status = 2;
 
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
 
         try (Connection connection = DriverManager
                 .getConnection("jdbc:mysql://localhost:3306/soen387_school", "root", "synystergates");
@@ -24,9 +24,10 @@ public class LoginDao {
             preparedStatement.setString(1, loginBean.getUsername());
             preparedStatement.setString(2, loginBean.getPassword());
 
-            System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
-            status = rs.next();
+            if (rs.next()) {
+                status = rs.getInt("isAdmin");
+            }
 
         } catch (SQLException e) {
             // process sql exception
@@ -34,6 +35,7 @@ public class LoginDao {
         }
         return status;
     }
+
 
     private void printSQLException(SQLException ex) {
         for (Throwable e: ex) {
