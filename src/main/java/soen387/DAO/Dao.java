@@ -1,13 +1,12 @@
 package soen387.DAO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface Dao<T> {
 
     void create(T t) throws ClassNotFoundException;
 
-    T get(long id) throws ClassNotFoundException;
+    T get(int id) throws ClassNotFoundException;
 
     T get(String idStr) throws ClassNotFoundException;
 
@@ -15,5 +14,5 @@ public interface Dao<T> {
 
     void update(T t, String[] params);
 
-    void delete(T t);
+    void delete(T t) throws ClassNotFoundException;
 }

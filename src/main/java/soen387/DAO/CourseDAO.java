@@ -65,7 +65,7 @@ public class CourseDAO implements Dao<Course> {
     }
 
     @Override
-    public Course get(long id) {
+    public Course get(int id) {
         return null;
     }
 

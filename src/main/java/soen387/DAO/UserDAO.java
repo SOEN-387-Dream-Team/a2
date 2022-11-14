@@ -16,10 +16,35 @@ public class UserDAO implements Dao<User> {
     @Override
     public void create(User user) throws ClassNotFoundException {
 
+//        String INSERT_USERS_SQL = "INSERT INTO users" +
+//                "  (first_name, last_name, address, email, phoneNum, dateOB, courses, password, isAdmin) VALUES " +
+//                " (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+//        int result = 0;
+//
+//        try (Connection connection = DriverManager
+//                //TODO : change connection to database url
+//                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+//             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
+//            preparedStatement.setString(1, user.getFirstName());
+//            preparedStatement.setString(2, user.getLastName());
+//            preparedStatement.setString(3, user.getAddress());
+//            preparedStatement.setString(4, user.getEmail());
+//            preparedStatement.setString(5, user.getAddress());
+//            preparedStatement.setString(6, user.getPhoneNum());
+//            preparedStatement.setString(7, user.getDOB());
+//            preparedStatement.setString(8, user.getPass());
+//            preparedStatement.setBoolean(9, user.getAdminStatus());
+//
+//            System.out.println(preparedStatement);
+//
+//            result = preparedStatement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Override
-    public User get(long id) throws ClassNotFoundException{
+    public User get(int id) throws ClassNotFoundException{
         String SELECT_COURSE_SQL = "SELECT * FROM user" +
                 "  WHERE id = ?; ";
 
@@ -33,14 +58,14 @@ public class UserDAO implements Dao<User> {
              //Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL)) {
 
-            preparedStatement.setLong(1, id);
+            preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
 
-                int userId = (int) id;
+                int userId =  id;
                 String firstName = rs.getString("firstName");
                 String lastName = rs.getString("lastName");
                 String address = rs.getString("address");
