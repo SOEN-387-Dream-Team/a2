@@ -49,6 +49,19 @@ public class User
 
     }
 
+    public User(int ID, String firstName, String lastName, String address, String email, String phoneNum, String dateOB, String password, Boolean isAdmin)
+    {
+        this.ID = ID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.email = email;
+        this.phoneNum = phoneNum;
+        this.dateOB = dateOB;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
+
 
     //Need the name of the course and the course object
     public void addCourse(String courseName, Course courseObj)

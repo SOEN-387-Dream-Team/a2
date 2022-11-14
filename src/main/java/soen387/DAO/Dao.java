@@ -7,7 +7,7 @@ public interface Dao<T> {
 
     void create(T t) throws ClassNotFoundException;
 
-    T get(long id);
+    T get(long id) throws ClassNotFoundException;
 
     T get(String idStr) throws ClassNotFoundException;
 

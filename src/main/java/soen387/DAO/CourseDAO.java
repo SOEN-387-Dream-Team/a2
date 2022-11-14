@@ -6,6 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static soen387.DatabaseConnConstants.DB_USER;
+import static soen387.DatabaseConnConstants.DB_PASSWORD;
+
 public class CourseDAO implements Dao<Course> {
 
 
@@ -36,7 +39,7 @@ public class CourseDAO implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", "admin", "admin");
+                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
 
              //Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_COURSE_SQL)) {
@@ -77,7 +80,7 @@ public class CourseDAO implements Dao<Course> {
 
         Course retrievedCourse = null;
         try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", "admin", "admin");
+                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
 
              //Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL)) {
@@ -132,7 +135,7 @@ public class CourseDAO implements Dao<Course> {
         List<Course> allCourses = new ArrayList<>();
         Course retrievedCourse = null;
         try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", "admin", "admin");
+                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
 
              //Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALLCOURSES_SQL)) {
@@ -186,10 +189,11 @@ public class CourseDAO implements Dao<Course> {
 
         boolean flag = false;
         try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", "admin", "admin");
+                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
 
              //Step 2:Create a statement using connection object
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
+            preparedStatement.setString(1, c.getCourseCode());
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
