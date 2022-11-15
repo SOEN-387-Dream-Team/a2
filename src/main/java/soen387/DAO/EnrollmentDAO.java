@@ -3,30 +3,27 @@ package soen387.DAO;
 import soen387.Course;
 import soen387.Enrollment;
 import soen387.User;
-import static soen387.DatabaseConnConstants.DB_USER;
-import static soen387.DatabaseConnConstants.DB_PASSWORD;
+
+import static soen387.DatabaseConnConstants.CONNECTION;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnrollmentDAO implements Dao<Enrollment>{
-
+public class EnrollmentDAO implements Dao<Enrollment> {
 
     @Override
     //Create an Enrollment --> register a course to a student
     public void create(Enrollment enrollment) throws ClassNotFoundException {
         //Conditions that need to be met before registering
-        if(isCourseLimitPerSemesterValid(enrollment.getUser(), enrollment.getCourse())){
+        if (isCourseLimitPerSemesterValid(enrollment.getUser(), enrollment.getCourse())) {
             String INSERT_ENROLLMENT_SQL = "INSERT INTO student_courses VALUES (?, UPPER(?));";
 
             Class.forName("com.mysql.jdbc.Driver");
 
-            try (Connection connection = DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+            try (
 
-                 //Step 2:Create a statement using connection object
-                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ENROLLMENT_SQL)) {
+                    PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -39,20 +36,17 @@ public class EnrollmentDAO implements Dao<Enrollment>{
                 // process sql exception
                 printSQLException(e);
             }
-        }
-        else
+        } else
             System.out.println("Unable to create enrollment");
     }
 
-    public boolean isCourseLimitPerSemesterValid(User student, Course course)  {
+    public boolean isCourseLimitPerSemesterValid(User student, Course course) {
         boolean courseLimitFlag = false;
         boolean startDateLimitFlag = false;
 
         String SELECT_ENROLLED_COURSES = "SELECT * FROM student_courses c INNER JOIN courses c ON s.courseCode = c.courseCode WHERE s.id = ? AND c.semester = UPPER(?)";
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ENROLLED_COURSES)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getSemester());
             System.out.println(preparedStatement);
@@ -84,10 +78,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
 
         //check to see if we are within the 1 week time limit
         String SELECT_VALID_COURSE_STARTDATE_SQL = "SELECT startDate FROM courses c WHERE CURDATE() < DATE_ADD(c.startDate, INTERVAL 7 DAYS AND c.courseCode = UPPER(?);";
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -118,16 +110,13 @@ public class EnrollmentDAO implements Dao<Enrollment>{
     public void delete(Enrollment enrollment) throws ClassNotFoundException {
 
         //Conditions that need to be met before drop course
-        if(isStudentEnrolledInCourse(enrollment.getUser(), enrollment.getCourse())){
+        if (isStudentEnrolledInCourse(enrollment.getUser(), enrollment.getCourse())) {
             String DELETE_ENROLLMENT_SQL = "DELETE FROM student_courses WHERE id=? AND courseCode = UPPER(?);";
 
             Class.forName("com.mysql.jdbc.Driver");
 
-            try (Connection connection = DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-                 //Step 2:Create a statement using connection object
-                 PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ENROLLMENT_SQL)) {
+            try (
+                    PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -140,14 +129,14 @@ public class EnrollmentDAO implements Dao<Enrollment>{
                 // process sql exception
                 printSQLException(e);
             }
-        }
-        else
+        } else
             System.out.println("Unable to delete enrollment");
 
     }
 
     /**
      * Used to check if a student is enrolled in a particular course
+     *
      * @param student
      * @param course
      * @return
@@ -157,10 +146,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         boolean endDateLimitFlag = false;
 
         String SELECT_ENROLLED_COURSE_SQL = "SELECT * FROM student_courses WHERE id=? AND courseCode = UPPER(?); ";
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getCourseCode());
             System.out.println(preparedStatement);
@@ -178,8 +165,7 @@ public class EnrollmentDAO implements Dao<Enrollment>{
 
                 //check if the class has ended already or not
                 endDateLimitFlag = isCourseDropWithinDateLimit(course);
-            }
-            else
+            } else
                 System.out.println("Error occurred, Student is not enrolled in this course.");
 
         } catch (SQLException e) {
@@ -188,15 +174,14 @@ public class EnrollmentDAO implements Dao<Enrollment>{
 
         return studentEnrolledInCourseFlag && endDateLimitFlag;
     }
-    public boolean isCourseDropWithinDateLimit(Course course){
+
+    public boolean isCourseDropWithinDateLimit(Course course) {
         boolean endDateLimitFlag = false;
 
         //check to see if we are within the semester time limit to drop course
         String SELECT_VALID_COURSE_ENDDATE_SQL = "SELECT * FROM courses c WHERE CURDATE() < c.endDate AND c.courseCODE = UPPER(?);";
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -224,7 +209,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
     }
 
     /**
-     *  gets all the courses this particular student is enrolled in
+     * gets all the courses this particular student is enrolled in
+     *
      * @param student
      * @return
      */
@@ -237,11 +223,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         Course retrievedEnrolledCourse = null;
         CourseDAO courseDAO = new CourseDAO();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -262,7 +245,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
     }
 
     /**
-     *  gets all the unenrolled courses this particular student
+     * gets all the unenrolled courses this particular student
+     *
      * @param student
      * @return
      */
@@ -274,11 +258,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         Course retrievedUnenrolledCourse = null;
         CourseDAO courseDAO = new CourseDAO();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -301,6 +282,7 @@ public class EnrollmentDAO implements Dao<Enrollment>{
 
     /**
      * gets all the unenrolled courses this particular student for the semester they chose to enrol in
+     *
      * @param student
      * @param selectedSemester
      * @return
@@ -315,11 +297,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         Course retrievedUnenrolledCourse = null;
         CourseDAO courseDAO = new CourseDAO();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, selectedSemester);
             System.out.println(preparedStatement);
@@ -351,11 +330,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         Course retrievedEnrolledCourse = null;
         CourseDAO courseDAO = new CourseDAO();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, semester);
             System.out.println(preparedStatement);
@@ -388,11 +364,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
         User retrievedEnrolledStudent = null;
         UserDAO userDAO = new UserDAO();
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -430,7 +403,8 @@ public class EnrollmentDAO implements Dao<Enrollment>{
     }
 
     @Override
-    public void update(Enrollment enrollment, String[] params) {    }
+    public void update(Enrollment enrollment, String[] params) {
+    }
 
 
     private void printSQLException(SQLException ex) {

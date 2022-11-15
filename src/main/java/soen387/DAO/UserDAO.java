@@ -6,45 +6,38 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soen387.DatabaseConnConstants.DB_USER;
-import static soen387.DatabaseConnConstants.DB_PASSWORD;
-
+import static soen387.DatabaseConnConstants.CONNECTION;
 
 public class UserDAO implements Dao<User> {
 
 
     @Override
-    public void create(User user) throws ClassNotFoundException {
+    public void create(User user) {
 
-//        String INSERT_USERS_SQL = "INSERT INTO users" +
-//                "  (first_name, last_name, address, email, phoneNum, dateOB, courses, password, isAdmin) VALUES " +
-//                " (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-//        int result = 0;
-//
-//        try (Connection connection = DriverManager
-//                //TODO : change connection to database url
-//                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-//             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
-//            preparedStatement.setString(1, user.getFirstName());
-//            preparedStatement.setString(2, user.getLastName());
-//            preparedStatement.setString(3, user.getAddress());
-//            preparedStatement.setString(4, user.getEmail());
-//            preparedStatement.setString(5, user.getAddress());
-//            preparedStatement.setString(6, user.getPhoneNum());
-//            preparedStatement.setString(7, user.getDOB());
-//            preparedStatement.setString(8, user.getPass());
-//            preparedStatement.setBoolean(9, user.getAdminStatus());
-//
-//            System.out.println(preparedStatement);
-//
-//            result = preparedStatement.executeUpdate();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        String INSERT_USERS_SQL = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+        try (
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) {
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getLastName());
+            preparedStatement.setString(3, user.getAddress());
+            preparedStatement.setString(4, user.getEmail());
+            preparedStatement.setString(5, user.getAddress());
+            preparedStatement.setString(6, user.getPhoneNum());
+            preparedStatement.setString(7, user.getDOB());
+            preparedStatement.setString(8, user.getPass());
+            preparedStatement.setBoolean(9, user.getAdminStatus());
+
+            System.out.println(preparedStatement);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public User get(int id) throws ClassNotFoundException{
+    public User get(int id) throws ClassNotFoundException {
         String SELECT_COURSE_SQL = "SELECT * FROM user" +
                 "  WHERE id = ?; ";
 
@@ -52,20 +45,18 @@ public class UserDAO implements Dao<User> {
         Class.forName("com.mysql.jdbc.Driver");
 
         User retrievedUser = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
             preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
 
-                int userId =  id;
+                int userId = id;
                 String firstName = rs.getString("firstName");
                 String lastName = rs.getString("lastName");
                 String address = rs.getString("address");
@@ -73,7 +64,7 @@ public class UserDAO implements Dao<User> {
                 String phoneNumber = rs.getString("phoneNumber");
                 String dateOfBirth = rs.getString("dateOfBirth");
                 String password = rs.getString("password"); //Prob avoid this?
-                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true: false;
+                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true : false;
 
 
                 retrievedUser = new User(
@@ -109,11 +100,9 @@ public class UserDAO implements Dao<User> {
         Class.forName("com.mysql.jdbc.Driver");
 
         User retrievedUser = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
             preparedStatement.setString(1, fName);
             preparedStatement.setString(2, lName);
@@ -121,7 +110,7 @@ public class UserDAO implements Dao<User> {
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
 
                 int userId = rs.getInt("id");
                 String firstName = rs.getString("firstName");
@@ -131,7 +120,7 @@ public class UserDAO implements Dao<User> {
                 String phoneNumber = rs.getString("phoneNumber");
                 String dateOfBirth = rs.getString("dateOfBirth");
                 String password = rs.getString("password"); //Prob avoid this?
-                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true: false;
+                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true : false;
 
 
                 retrievedUser = new User(
@@ -161,11 +150,9 @@ public class UserDAO implements Dao<User> {
         Class.forName("com.mysql.jdbc.Driver");
 
         boolean flag = false;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setString(2, typedPassword);
             System.out.println(preparedStatement);
@@ -175,7 +162,7 @@ public class UserDAO implements Dao<User> {
 
             rs.last(); //move cursor to last row
 
-            if(rs.getRow() > 0){ //get total row count
+            if (rs.getRow() > 0) { //get total row count
                 flag = true;
             }
 
@@ -196,11 +183,9 @@ public class UserDAO implements Dao<User> {
 
         List<User> allUsers = new ArrayList<>();
         User retrievedUser = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALLUSERS_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) {
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
@@ -215,7 +200,7 @@ public class UserDAO implements Dao<User> {
                 String phoneNumber = rs.getString("phoneNumber");
                 String dateOfBirth = rs.getString("dateOfBirth");
                 String password = rs.getString("password");
-                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true: false;
+                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true : false;
 
                 retrievedUser = new User(
                         userId,
@@ -246,11 +231,9 @@ public class UserDAO implements Dao<User> {
 
         List<User> allStudents = new ArrayList<>();
         User retrievedUser = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALLSTUDENTS_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) {
             preparedStatement.setInt(1, 0); //isAdmin of 0 indicates students
             System.out.println(preparedStatement);
 
@@ -266,7 +249,7 @@ public class UserDAO implements Dao<User> {
                 String phoneNumber = rs.getString("phoneNumber");
                 String dateOfBirth = rs.getString("dateOfBirth");
                 String password = rs.getString("password");
-                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true: false;
+                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true : false;
 
                 retrievedUser = new User(
                         userId,
@@ -297,11 +280,9 @@ public class UserDAO implements Dao<User> {
 
         List<User> allAdmins = new ArrayList<>();
         User retrievedUser = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
+        try (
 
-             //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALLADMINS_SQL)) {
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) {
             preparedStatement.setInt(1, 1); //isAdmin of 1 indicates admin
             System.out.println(preparedStatement);
 
@@ -317,7 +298,7 @@ public class UserDAO implements Dao<User> {
                 String phoneNumber = rs.getString("phoneNumber");
                 String dateOfBirth = rs.getString("dateOfBirth");
                 String password = rs.getString("password");
-                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true: false;
+                boolean isAdmin = (rs.getInt("isAdmin") == 1) ? true : false;
 
                 retrievedUser = new User(
                         userId,

@@ -6,11 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static soen387.DatabaseConnConstants.DB_USER;
-import static soen387.DatabaseConnConstants.DB_PASSWORD;
+import static soen387.DatabaseConnConstants.CONNECTION;
 
 public class CourseDAO implements Dao<Course> {
-
 
     @Override
     public void create(Course course) throws ClassNotFoundException {
@@ -38,11 +36,9 @@ public class CourseDAO implements Dao<Course> {
 
         Class.forName("com.mysql.jdbc.Driver");
 
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
+        try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_COURSE_SQL)) {
+             PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) {
 
             preparedStatement.setString(1, course.getCourseCode());
             preparedStatement.setString(2, course.getTitle());
@@ -79,11 +75,9 @@ public class CourseDAO implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         Course retrievedCourse = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
+        try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL)) {
+             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
 
             preparedStatement.setString(1, idStr);
@@ -92,7 +86,7 @@ public class CourseDAO implements Dao<Course> {
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
 
                 String courseCode = idStr;
                 String title = rs.getString("title");
@@ -134,11 +128,9 @@ public class CourseDAO implements Dao<Course> {
 
         List<Course> allCourses = new ArrayList<>();
         Course retrievedCourse = null;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
+        try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALLCOURSES_SQL)) {
+             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) {
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
@@ -188,11 +180,9 @@ public class CourseDAO implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         boolean flag = false;
-        try (Connection connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/soen387_school", DB_USER, DB_PASSWORD);
-
+        try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
+             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, c.getCourseCode());
             System.out.println(preparedStatement);
 
