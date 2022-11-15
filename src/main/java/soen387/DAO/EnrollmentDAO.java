@@ -1,7 +1,6 @@
 package soen387.DAO;
 
 import soen387.Course;
-import soen387.DataMapperException;
 import soen387.Enrollment;
 import soen387.User;
 import static soen387.DatabaseConnConstants.DB_USER;
@@ -378,7 +377,7 @@ public class EnrollmentDAO implements Dao<Enrollment>{
 
     }
 
-    public List<User> getAllStudentsForEnrolledCourse(Course course) throws DataMapperException, ClassNotFoundException {
+    public List<User> getAllStudentsForEnrolledCourse(Course course) throws ClassNotFoundException {
         //find all students in a course
         String SELECT_STUDENTS_IN_COURSE_SQL = "SELECT DISTINCT s.id, u.firstName, u.lastName FROM student_courses s JOIN user u ON s.id = u.id WHERE s.courseCode=UPPER(?)";
 
