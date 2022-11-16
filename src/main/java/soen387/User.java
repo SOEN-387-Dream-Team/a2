@@ -19,7 +19,8 @@ public class User
 
     public User()
     {
-        this.ID = count++;
+        Random rand = new Random();
+        this.ID = rand.nextInt();
         this.firstName = "default";
         this.firstName = "default";
         this.lastName = "default";
@@ -33,19 +34,19 @@ public class User
 
     }
 
-    public User(String fname, String lnam, String addr, String email, String num, String dob, String pass, Boolean admin)
+    public User(int ID, String password)
     {
-        this.ID = count++;
-        this.firstName = fname;
-        this.firstName = fname;
-        this.lastName = lnam;
-        this.address = addr;
-        this.email = email;
-        this.phoneNum = num;
-        this.dateOB = dob;
-        this.courses = new Hashtable<String, Course>(5);
-        this.password = pass;
-        this.isAdmin = admin;
+        this.ID = ID;
+        this.firstName = "default";
+        this.firstName = "default";
+        this.lastName = "default";
+        this.address = "default";
+        this.email = "default";
+        this.phoneNum = "default";
+        this.dateOB = "default";
+        this.courses = new Hashtable<String, Course>();
+        this.password = password;
+        this.isAdmin = false;
 
     }
 
