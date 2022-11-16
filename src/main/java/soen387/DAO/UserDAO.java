@@ -160,7 +160,7 @@ public class UserDAO implements Dao<User> {
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
 
-            rs.last(); //move cursor to last row
+            rs.next(); //move cursor to last row
 
             if (rs.getRow() > 0) { //get total row count
                 flag = true;
