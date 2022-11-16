@@ -13,7 +13,7 @@ public class Course
     String instructor;
 
 
-    Course()
+    public Course()
     {
         this.courseCode = "default";
         this.title = "default";
@@ -27,7 +27,7 @@ public class Course
 
     }
 
-    Course(String code, String title, String semester, String room, String start, String end, String day, String time, String instructor)
+    public Course(String code, String title, String semester, String room, String start, String end, String day, String time, String instructor)
     {
         this.courseCode = code;
         this.title = title;
@@ -111,5 +111,20 @@ public class Course
 
     public void setInstructor(String instructor) {
         this.instructor = instructor;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseCode='" + courseCode + '\'' +
+                ", title='" + title + '\'' +
+                ", semester='" + semester + '\'' +
+                ", room='" + room + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", days='" + days + '\'' +
+                ", time='" + time + '\'' +
+                ", instructor='" + instructor + '\'' +
+                '}';
     }
 }
