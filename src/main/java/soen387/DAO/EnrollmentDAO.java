@@ -9,8 +9,11 @@ import static soen387.DatabaseConnConstants.CONNECTION;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
-public class EnrollmentDAO implements Dao<Enrollment> {
+public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
+	
+	Semaphore sem;
 
     @Override
     //Create an Enrollment --> register a course to a student
@@ -23,7 +26,8 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
             try (
 
-                    PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL)) {
+            	sem.acquire();
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -31,10 +35,13 @@ public class EnrollmentDAO implements Dao<Enrollment> {
                 System.out.println(preparedStatement);
                 // Step 3: Execute the query or update query
                 preparedStatement.executeUpdate();
+                
+                sem.release();
 
             } catch (SQLException e) {
                 // process sql exception
                 printSQLException(e);
+                sem.release();
             }
         } else
             System.out.println("Unable to create enrollment");
@@ -46,12 +53,15 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         String SELECT_ENROLLED_COURSES = "SELECT * FROM student_courses c INNER JOIN courses c ON s.courseCode = c.courseCode WHERE s.id = ? AND c.semester = UPPER(?)";
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES)) {
+        	
+        	sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getSemester());
             System.out.println(preparedStatement);
 
             ResultSet result = preparedStatement.executeQuery();
+            sem.release();
 
             int size = 0;
             if (result != null) {
@@ -67,7 +77,8 @@ public class EnrollmentDAO implements Dao<Enrollment> {
                 System.out.println("Can not enroll to any more classes; max of 5 classes already reached.");
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+        	sem.release();
+        	throw new RuntimeException(e);
         }
 
         return (courseLimitFlag && startDateLimitFlag);
@@ -79,11 +90,14 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         //check to see if we are within the 1 week time limit
         String SELECT_VALID_COURSE_STARTDATE_SQL = "SELECT startDate FROM courses c WHERE CURDATE() < DATE_ADD(c.startDate, INTERVAL 7 DAYS AND c.courseCode = UPPER(?);";
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
+               
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
             ResultSet result = preparedStatement.executeQuery();
+            sem.release();
 
             int dateValidCount = 0;
             if (result != null) {
@@ -100,6 +114,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
             }
 
         } catch (SQLException e) {
+        	sem.release();
             throw new RuntimeException(e);
         }
         return startDateLimitFlag;
@@ -116,7 +131,9 @@ public class EnrollmentDAO implements Dao<Enrollment> {
             Class.forName("com.mysql.jdbc.Driver");
 
             try (
-                    PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL)) {
+                    
+            	sem.acquire();
+            	PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -124,9 +141,11 @@ public class EnrollmentDAO implements Dao<Enrollment> {
                 System.out.println(preparedStatement);
                 // Step 3: Execute the query or update query
                 preparedStatement.executeUpdate();
+                sem.release();
 
             } catch (SQLException e) {
                 // process sql exception
+            	sem.release();
                 printSQLException(e);
             }
         } else
@@ -147,12 +166,15 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         String SELECT_ENROLLED_COURSE_SQL = "SELECT * FROM student_courses WHERE id=? AND courseCode = UPPER(?); ";
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
+                
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getCourseCode());
             System.out.println(preparedStatement);
 
             ResultSet result = preparedStatement.executeQuery();
+            sem.release();
 
             int size = 0;
             if (result != null) {
@@ -169,6 +191,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
                 System.out.println("Error occurred, Student is not enrolled in this course.");
 
         } catch (SQLException e) {
+        	sem.release();
             throw new RuntimeException(e);
         }
 
@@ -181,11 +204,14 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         //check to see if we are within the semester time limit to drop course
         String SELECT_VALID_COURSE_ENDDATE_SQL = "SELECT * FROM courses c WHERE CURDATE() < c.endDate AND c.courseCODE = UPPER(?);";
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
+               
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
             ResultSet result = preparedStatement.executeQuery();
+            sem.release();
 
             int dateValidCount = 0;
             if (result != null) {
@@ -202,6 +228,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
             }
 
         } catch (SQLException e) {
+        	sem.release();
             throw new RuntimeException(e);
         }
 
@@ -224,12 +251,16 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
+            
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
                 retrievedEnrolledCourse = courseDAO.get(rs.getString("courseCode"));
                 allEnrolledCourses.add(retrievedEnrolledCourse);
@@ -237,6 +268,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -259,12 +291,16 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
+            
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
                 retrievedUnenrolledCourse = courseDAO.get(rs.getString("courseCode"));
                 allUenrolledCourses.add(retrievedUnenrolledCourse);
@@ -272,6 +308,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -298,13 +335,16 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
+                
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, selectedSemester);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
             while (rs.next()) {
 
                 retrievedUnenrolledCourse = courseDAO.get(rs.getString("courseCode"));
@@ -313,6 +353,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -331,13 +372,17 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
+                
+        	sem.acquire();	
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, semester);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 retrievedEnrolledCourse = courseDAO.get(rs.getString("courseCode"));
@@ -346,6 +391,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -365,12 +411,16 @@ public class EnrollmentDAO implements Dao<Enrollment> {
         UserDAO userDAO = new UserDAO();
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
+                
+        	sem.acquire();	
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 retrievedEnrolledStudent = userDAO.get(rs.getInt("id"));
@@ -379,6 +429,7 @@ public class EnrollmentDAO implements Dao<Enrollment> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 

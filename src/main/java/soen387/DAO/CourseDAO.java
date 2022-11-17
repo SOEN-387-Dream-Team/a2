@@ -5,10 +5,13 @@ import soen387.Course;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*; 
 
 import static soen387.DatabaseConnConstants.CONNECTION;
 
-public class CourseDAO implements Dao<Course> {
+public class CourseDAO extends Thread implements Dao<Course> {
+	
+	Semaphore sem;
 
     @Override
     public void create(Course course) throws ClassNotFoundException {
@@ -38,7 +41,9 @@ public class CourseDAO implements Dao<Course> {
 
         try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) {
+             
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) {
 
             preparedStatement.setString(1, course.getCourseCode());
             preparedStatement.setString(2, course.getTitle());
@@ -53,9 +58,11 @@ public class CourseDAO implements Dao<Course> {
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             preparedStatement.executeUpdate();
+            sem.release();
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
     }
@@ -77,7 +84,9 @@ public class CourseDAO implements Dao<Course> {
         Course retrievedCourse = null;
         try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+             
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
 
             preparedStatement.setString(1, idStr);
@@ -86,6 +95,8 @@ public class CourseDAO implements Dao<Course> {
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             if (rs.next()) {
 
                 String courseCode = idStr;
@@ -114,6 +125,7 @@ public class CourseDAO implements Dao<Course> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -130,11 +142,14 @@ public class CourseDAO implements Dao<Course> {
         Course retrievedCourse = null;
         try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) {
+            sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) {
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 String courseCode =  rs.getString("courseCode");;
@@ -164,6 +179,7 @@ public class CourseDAO implements Dao<Course> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -182,12 +198,14 @@ public class CourseDAO implements Dao<Course> {
         boolean flag = false;
         try (
              //Step 2:Create a statement using connection object
-             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
+            sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, c.getCourseCode());
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
 
             rs.last(); //move cursor to last row
 
@@ -197,6 +215,7 @@ public class CourseDAO implements Dao<Course> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 

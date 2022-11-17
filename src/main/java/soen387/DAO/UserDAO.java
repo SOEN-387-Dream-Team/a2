@@ -5,10 +5,13 @@ import soen387.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static soen387.DatabaseConnConstants.CONNECTION;
 
-public class UserDAO implements Dao<User> {
+public class UserDAO extends Thread implements Dao<User> {
+	
+    Semaphore sem;
 
 
     @Override
@@ -17,7 +20,9 @@ public class UserDAO implements Dao<User> {
         String INSERT_USERS_SQL = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try (
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) {
+                
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) {
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setString(3, user.getAddress());
@@ -31,7 +36,9 @@ public class UserDAO implements Dao<User> {
             System.out.println(preparedStatement);
 
             preparedStatement.executeUpdate();
+            sem.release();
         } catch (SQLException e) {
+        	sem.release();
             throw new RuntimeException(e);
         }
     }
@@ -47,13 +54,16 @@ public class UserDAO implements Dao<User> {
         User retrievedUser = null;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+            sem.acquire(); 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
             preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             if (rs.next()) {
 
                 int userId = id;
@@ -82,6 +92,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -102,7 +113,9 @@ public class UserDAO implements Dao<User> {
         User retrievedUser = null;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+                
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
 
             preparedStatement.setString(1, fName);
             preparedStatement.setString(2, lName);
@@ -110,6 +123,8 @@ public class UserDAO implements Dao<User> {
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             if (rs.next()) {
 
                 int userId = rs.getInt("id");
@@ -138,6 +153,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -152,13 +168,16 @@ public class UserDAO implements Dao<User> {
         boolean flag = false;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) {
+                
+        	sem.acquire();
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setString(2, typedPassword);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
 
             rs.next(); //move cursor to last row
 
@@ -168,6 +187,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -185,11 +205,15 @@ public class UserDAO implements Dao<User> {
         User retrievedUser = null;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) {
+                
+        	sem.acquire();	
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) {
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 int userId = rs.getInt("id");
@@ -218,6 +242,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -233,12 +258,15 @@ public class UserDAO implements Dao<User> {
         User retrievedUser = null;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) {
+            sem.acquire();    
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) {
             preparedStatement.setInt(1, 0); //isAdmin of 0 indicates students
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 int userId = rs.getInt("id");
@@ -267,6 +295,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
@@ -282,12 +311,15 @@ public class UserDAO implements Dao<User> {
         User retrievedUser = null;
         try (
 
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) {
+            sem.acquire();	
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) {
             preparedStatement.setInt(1, 1); //isAdmin of 1 indicates admin
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
+            sem.release();
+            
             while (rs.next()) {
 
                 int userId = rs.getInt("id");
@@ -316,6 +348,7 @@ public class UserDAO implements Dao<User> {
 
         } catch (SQLException e) {
             // process sql exception
+        	sem.release();
             printSQLException(e);
         }
 
