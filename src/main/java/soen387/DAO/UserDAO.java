@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 
 import static soen387.DatabaseConnConstants.CONNECTION;
 
-public class UserDAO implements Dao<User> {
+public class UserDAO extends Thread implements Dao<User> {
 	
     Semaphore sem;
 
