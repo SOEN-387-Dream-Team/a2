@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class EnrollmentDAO implements Dao<Enrollment> {
+public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
 	
 	Semaphore sem;
 
