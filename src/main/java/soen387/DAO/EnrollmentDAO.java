@@ -26,7 +26,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
 
             try (
 
-            	sem.acquire();
+            	sem = new Semaphore(1);
+		sem.acquire();
                 PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
@@ -54,7 +55,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         String SELECT_ENROLLED_COURSES = "SELECT * FROM student_courses c INNER JOIN courses c ON s.courseCode = c.courseCode WHERE s.id = ? AND c.semester = UPPER(?)";
         try (
         	
-        	sem.acquire();
+            sem = new Semaphore(1);
+	    sem.acquire();
             PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getSemester());
@@ -91,8 +93,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         String SELECT_VALID_COURSE_STARTDATE_SQL = "SELECT startDate FROM courses c WHERE CURDATE() < DATE_ADD(c.startDate, INTERVAL 7 DAYS AND c.courseCode = UPPER(?);";
         try (
                
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
+            sem = new Semaphore(1);
+	    sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -132,7 +135,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
 
             try (
                     
-            	sem.acquire();
+            	sem = new Semaphore(1);
+		sem.acquire();
             	PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL)) {
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
@@ -167,8 +171,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         String SELECT_ENROLLED_COURSE_SQL = "SELECT * FROM student_courses WHERE id=? AND courseCode = UPPER(?); ";
         try (
                 
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
+            sem = new Semaphore(1);
+	    sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getCourseCode());
             System.out.println(preparedStatement);
@@ -205,8 +210,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         String SELECT_VALID_COURSE_ENDDATE_SQL = "SELECT * FROM courses c WHERE CURDATE() < c.endDate AND c.courseCODE = UPPER(?);";
         try (
                
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
+            sem = new Semaphore(1);
+	    sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -252,8 +258,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
 
         try (
             
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
+            sem = new Semaphore(1);
+	    sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -291,9 +298,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-            
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
+            sem = new Semaphore(1);
+            sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) {
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -335,9 +342,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                
-        	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
+            sem = new Semaphore(1);  
+            sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, selectedSemester);
             System.out.println(preparedStatement);
@@ -372,9 +379,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
         CourseDAO courseDAO = new CourseDAO();
 
         try (
-                
-        	sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
+            sem = new Semaphore(1); 
+            sem.acquire();	
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) {
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, semester);
             System.out.println(preparedStatement);
@@ -412,8 +419,9 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment> {
 
         try (
                 
-        	sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
+            sem = new Semaphore(1);
+	    sem.acquire();	
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) {
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
