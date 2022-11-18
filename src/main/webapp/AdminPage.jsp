@@ -12,6 +12,8 @@
 </head>
 <!--Navigation bar with bootstrap header -->
 <%
+    System.out.println("User ID is: ");
+    System.out.println(session.getAttribute("id"));
     if (session.getAttribute("id") == null || session.getAttribute("isAdmin").equals("false"))
     {
         session.invalidate();
