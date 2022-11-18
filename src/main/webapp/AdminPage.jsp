@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Administrator Options</title>
     <link rel="stylesheet" href="css/AdminPageStyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="js/AdminOptions.js"></script>
     <script type="text/javascript" src="js/Validation.js"></script>
 </head>
@@ -18,6 +19,20 @@
     }
 %>
 <body>
+<script>
+    $(document).ready(function() {
+        $("#courseReport").click(function() {
+            $.get('AdminAjax', function(data, status) {
+                $('#courseCode').html(data);
+            });
+        });
+        $("#studentReport").click(function() {
+            $.get('AdminAjax', function (data, status) {
+                $('#studentName').html(data);
+            });
+        });
+    });
+</script>
 <!--main page-->
 <div class="box">
     <div class="inner">
@@ -28,12 +43,12 @@
         <!--main buttons-->
         <div class="button-group">
             <span class="inline">
-                <form id="courseReport" onclick="openCourseForm();showCourses()" style="width:100%">
+                <form id="courseReport" onclick="openCourseForm()" style="width:100%">
                     <input type="button" value="Course Report"/>
                 </form>
             </span>
             <span class="inline">
-                <form id="studentReport" onclick="openStudentForm();showStudents()" style="width:100%">
+                <form id="studentReport" onclick="openStudentForm()" style="width:100%">
                     <input type="button" value="Student Report"/>
                 </form>
             </span>
