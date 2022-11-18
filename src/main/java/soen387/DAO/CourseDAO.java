@@ -38,9 +38,11 @@ public class CourseDAO extends Thread implements Dao<Course> {
         }
 
         Class.forName("com.mysql.jdbc.Driver");
+	
 
         try (
              //Step 2:Create a statement using connection object
+		sem = new Semaphore(1);
              
         	sem.acquire();
         	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) {
@@ -82,8 +84,10 @@ public class CourseDAO extends Thread implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         Course retrievedCourse = null;
+	
         try (
              //Step 2:Create a statement using connection object
+		sem = new Semaphore(1);
              
         	sem.acquire();
         	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
@@ -142,6 +146,7 @@ public class CourseDAO extends Thread implements Dao<Course> {
         Course retrievedCourse = null;
         try (
              //Step 2:Create a statement using connection object
+	    sem = new Semaphore(1);
             sem.acquire();
         	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) {
             System.out.println(preparedStatement);
@@ -198,6 +203,7 @@ public class CourseDAO extends Thread implements Dao<Course> {
         boolean flag = false;
         try (
              //Step 2:Create a statement using connection object
+	    sem = new Semaphore(1);
             sem.acquire();
         	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
             preparedStatement.setString(1, c.getCourseCode());
