@@ -24,7 +24,7 @@ public class UserDAO extends Thread implements Dao<User> {
         {
             sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL);
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setString(3, user.getAddress());
@@ -44,7 +44,12 @@ public class UserDAO extends Thread implements Dao<User> {
         {
         	sem.release();
             throw new RuntimeException(e);
-        }
+        } 
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
     }
 
     @Override
@@ -62,7 +67,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
             sem = new Semaphore(1);
             sem.acquire(); 
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL);
 
             preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
@@ -105,6 +110,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return retrievedUser;
     }
@@ -128,7 +138,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
             sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL); 
 
             preparedStatement.setString(1, fName);
             preparedStatement.setString(2, lName);
@@ -172,6 +182,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return retrievedUser;
     }
@@ -188,7 +203,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
             sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL);
             preparedStatement.setInt(1, userId);
             preparedStatement.setString(2, typedPassword);
             System.out.println(preparedStatement);
@@ -211,6 +226,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
 
         return flag;
@@ -230,7 +250,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
             sem = new Semaphore(1);
         	sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
@@ -271,6 +291,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allUsers;
     }
@@ -287,7 +312,7 @@ public class UserDAO extends Thread implements Dao<User> {
         {
             sem = new Semaphore(1);
             sem.acquire();    
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL); 
             preparedStatement.setInt(1, 0); //isAdmin of 0 indicates students
             System.out.println(preparedStatement);
 
@@ -329,6 +354,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allStudents;
     }
@@ -345,7 +375,7 @@ public class UserDAO extends Thread implements Dao<User> {
         {
             sem = new Semaphore(1);
             sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL);
             preparedStatement.setInt(1, 1); //isAdmin of 1 indicates admin
             System.out.println(preparedStatement);
 
@@ -387,6 +417,11 @@ public class UserDAO extends Thread implements Dao<User> {
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allAdmins;
     }

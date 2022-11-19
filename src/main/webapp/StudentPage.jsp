@@ -15,7 +15,7 @@
     <script type="text/javascript" src="js/StudentOption.js"></script>
     <script type="text/javascript" src="js/Validation.js"></script>
 </head>
-
+<%@ include file="navbar.jsp" %>
 <%
     if (session.getAttribute("id") == null || session.getAttribute("isAdmin").equals("true"))
     {

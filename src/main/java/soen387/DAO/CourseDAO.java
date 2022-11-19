@@ -55,7 +55,7 @@ public class CourseDAO extends Thread implements Dao<Course>
 		    sem = new Semaphore(1);
              
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL); 
 
             preparedStatement.setString(1, course.getCourseCode());
             preparedStatement.setString(2, course.getTitle());
@@ -79,6 +79,11 @@ public class CourseDAO extends Thread implements Dao<Course>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
     }
 
     @Override
@@ -104,7 +109,7 @@ public class CourseDAO extends Thread implements Dao<Course>
 		    sem = new Semaphore(1);
              
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL);
 
 
             preparedStatement.setString(1, idStr);
@@ -149,6 +154,11 @@ public class CourseDAO extends Thread implements Dao<Course>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return retrievedCourse;
     }
@@ -167,7 +177,7 @@ public class CourseDAO extends Thread implements Dao<Course>
              //Step 2:Create a statement using connection object
 	        sem = new Semaphore(1);
             sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL);
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
@@ -209,6 +219,11 @@ public class CourseDAO extends Thread implements Dao<Course>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allCourses;
     }
@@ -229,7 +244,7 @@ public class CourseDAO extends Thread implements Dao<Course>
              //Step 2:Create a statement using connection object
 	    sem = new Semaphore(1);
             sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL);
             preparedStatement.setString(1, c.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -251,6 +266,11 @@ public class CourseDAO extends Thread implements Dao<Course>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
 
         return flag;

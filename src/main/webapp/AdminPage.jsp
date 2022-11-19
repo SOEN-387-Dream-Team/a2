@@ -9,6 +9,7 @@
     <script type="text/javascript" src="js/AdminOptions.js"></script>
     <script type="text/javascript" src="js/Validation.js"></script>
 </head>
+<%@ include file="navbar.jsp" %>
 <!--Navigation bar with bootstrap header -->
 <%
     if (session.getAttribute("id") == null || session.getAttribute("isAdmin").equals("false"))
