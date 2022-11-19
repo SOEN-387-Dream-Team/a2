@@ -21,20 +21,7 @@
     }
 %>
 <body>
-<script>
-    $(document).ready(function() {
-        $("#courseReport").click(function() {
-            $.get('AdminAjax', function(data, status) {
-                $('#courseCode').html(data);
-            });
-        });
-        $("#studentReport").click(function() {
-            $.get('AdminAjax', function (data, status) {
-                $('#studentName').html(data);
-            });
-        });
-    });
-</script>
+
 <!--main page-->
 <div class="box">
     <div class="inner">
