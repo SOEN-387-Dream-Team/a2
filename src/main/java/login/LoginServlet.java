@@ -29,13 +29,13 @@ public class LoginServlet extends HttpServlet {
         try {
             if (userdao.isSignInValid(ID,password)) {
                 User user = userdao.get(ID);
+                session.setAttribute("name",user.getFirstName());
+                session.setAttribute("id",username);
                 if (user.getAdminStatus()) { // If user is admin
-                    session.setAttribute("id",username);
                     session.setAttribute("isAdmin","true");
                     response.sendRedirect("AdminPage.jsp");
                 }
                 else { // User is student
-                    session.setAttribute("id",username);
                     session.setAttribute("isAdmin","false");
                     response.sendRedirect("StudentPage.jsp");
                 }
