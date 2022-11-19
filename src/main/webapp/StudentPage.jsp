@@ -12,6 +12,7 @@
         }
     </style>
     <link rel="stylesheet" href="css/StudentPageStyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="js/StudentOption.js"></script>
     <script type="text/javascript" src="js/Validation.js"></script>
 </head>
@@ -35,12 +36,12 @@
             <hr style="width: 80%; text-align: left; margin-left: 0">
             <div class="button-group">
                         <span class="inline">
-                            <form id="addReport" onclick="openAddCourse();" style="width:100%">
+                            <form id="addReport" onclick="openAddCourse()" style="width:100%">
                                 <input type="button" value="Add Courses"/>
                             </form>
                         </span>
                 <span class="inline">
-                            <form id="dropReport" onclick="openDropCourse();showEnrolledCourses()" style="width:100%">
+                            <form id="dropReport" onclick="openDropCourse()" style="width:100%">
                                 <input type="button" value="Drop Courses"/>
                             </form>
                         </span>
@@ -69,7 +70,7 @@
             <p>A maximum of 5 courses can be enrolled at the same time in the same semester.</p>
 
             <label for="semesterChoice">Select a Semester</label>
-            <select name= "semesterChoice" id = "semesterChoice" onchange="showNonEnrolledCourses()">
+            <select name= "semesterChoice" id = "semesterChoice">
                 <option disabled selected value> -- select a semester -- </option>
                 <option value="FALL-2022">Fall 2022</option>
                 <option value="WINTER-2023">Winter 2023</option>
