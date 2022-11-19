@@ -33,7 +33,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
 
             	sem = new Semaphore(1);
 		        sem.acquire();
-                PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL))
+                PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_ENROLLMENT_SQL);
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -51,6 +51,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
                 printSQLException(e);
                 sem.release();
             }
+            catch (InterruptedException e) 
+            {
+            	sem.release();
+    			e.printStackTrace();
+    		}
         } 
 	else
 	{
@@ -69,7 +74,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES))
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES);
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getSemester());
             System.out.println(preparedStatement);
@@ -100,6 +105,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
         	throw new RuntimeException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return (courseLimitFlag && startDateLimitFlag);
     }
@@ -114,8 +124,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         {
                
             sem = new Semaphore(1);
-	    sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL)) 
+            sem.acquire();
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL); 
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -145,6 +155,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             throw new RuntimeException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
         return startDateLimitFlag;
     }
 
@@ -165,7 +180,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
                     
             	sem = new Semaphore(1);
 		        sem.acquire();
-            	PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL)) 
+            	PreparedStatement preparedStatement = CONNECTION.prepareStatement(DELETE_ENROLLMENT_SQL); 
 
                 preparedStatement.setInt(1, enrollment.getUser().getID());
                 preparedStatement.setString(2, enrollment.getCourse().getCourseCode());
@@ -182,6 +197,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             	sem.release();
                 printSQLException(e);
             }
+            catch (InterruptedException e) 
+            {
+            	sem.release();
+    			e.printStackTrace();
+    		}
         } 
         else
         {
@@ -208,7 +228,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
                 
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL); 
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getCourseCode());
             System.out.println(preparedStatement);
@@ -241,6 +261,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             throw new RuntimeException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return studentEnrolledInCourseFlag && endDateLimitFlag;
     }
@@ -256,7 +281,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
                
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL);
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -286,6 +311,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             throw new RuntimeException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return endDateLimitFlag;
     }
@@ -311,7 +341,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_ENROLLMENTS_SQL);
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -332,6 +362,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allEnrolledCourses;
 
@@ -356,7 +391,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         {
             sem = new Semaphore(1);
             sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_SQL);
             preparedStatement.setInt(1, student.getID());
             System.out.println(preparedStatement);
 
@@ -377,6 +412,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allUenrolledCourses;
 
@@ -404,7 +444,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         {
             sem = new Semaphore(1);  
             sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALL_UNENROLLMENTS_FOR_SEMESTER_SQL);
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, selectedSemester);
             System.out.println(preparedStatement);
@@ -426,6 +466,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allUnenrolledCourses;
     }
@@ -446,7 +491,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         {
             sem = new Semaphore(1); 
             sem.acquire();	
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL)) 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES_FOR_SEMESTER_SQL);
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, semester);
             System.out.println(preparedStatement);
@@ -469,6 +514,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allEnrolledCourses;
 
@@ -490,8 +540,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         {
                 
             sem = new Semaphore(1);
-	    sem.acquire();	
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL)) 
+            sem.acquire();	
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_STUDENTS_IN_COURSE_SQL); 
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -513,6 +563,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         	sem.release();
             printSQLException(e);
         }
+        catch (InterruptedException e) 
+        {
+        	sem.release();
+			e.printStackTrace();
+		}
 
         return allEnrolledStudents;
     }
