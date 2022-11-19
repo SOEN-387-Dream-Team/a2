@@ -15,14 +15,16 @@ public class UserDAO extends Thread implements Dao<User> {
 
 
     @Override
-    public void create(User user) {
+    public void create(User user) 
+    {
 
         String INSERT_USERS_SQL = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-        try (
-                
+        try 
+        {
+            sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_USERS_SQL)) 
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setString(3, user.getAddress());
@@ -37,14 +39,17 @@ public class UserDAO extends Thread implements Dao<User> {
 
             preparedStatement.executeUpdate();
             sem.release();
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
         	sem.release();
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public User get(int id) throws ClassNotFoundException {
+    public User get(int id) throws ClassNotFoundException 
+    {
         String SELECT_COURSE_SQL = "SELECT * FROM user" +
                 "  WHERE id = ?; ";
 
@@ -52,10 +57,12 @@ public class UserDAO extends Thread implements Dao<User> {
         Class.forName("com.mysql.jdbc.Driver");
 
         User retrievedUser = null;
-        try (
+        try 
+        {
 
+            sem = new Semaphore(1);
             sem.acquire(); 
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
 
             preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
@@ -64,7 +71,8 @@ public class UserDAO extends Thread implements Dao<User> {
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            if (rs.next()) {
+            if (rs.next()) 
+            {
 
                 int userId = id;
                 String firstName = rs.getString("firstName");
@@ -90,7 +98,9 @@ public class UserDAO extends Thread implements Dao<User> {
                 );
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -100,22 +110,25 @@ public class UserDAO extends Thread implements Dao<User> {
     }
 
     @Override
-    public User get(String idStr) throws ClassNotFoundException {
+    public User get(String idStr) throws ClassNotFoundException 
+    {
         return null;
     }
 
-    public User getByFirstNameAndLastName(String fName, String lName) throws ClassNotFoundException {
+    public User getByFirstNameAndLastName(String fName, String lName) throws ClassNotFoundException 
+    {
         String SELECT_COURSE_SQL = "SELECT id FROM user u WHERE u.firstName=? AND u.lastName=?";
 
 
         Class.forName("com.mysql.jdbc.Driver");
 
         User retrievedUser = null;
-        try (
+        try 
+        {
 
-                
+            sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
 
             preparedStatement.setString(1, fName);
             preparedStatement.setString(2, lName);
@@ -125,7 +138,8 @@ public class UserDAO extends Thread implements Dao<User> {
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            if (rs.next()) {
+            if (rs.next()) 
+            {
 
                 int userId = rs.getInt("id");
                 String firstName = rs.getString("firstName");
@@ -151,7 +165,9 @@ public class UserDAO extends Thread implements Dao<User> {
                 );
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -160,17 +176,19 @@ public class UserDAO extends Thread implements Dao<User> {
         return retrievedUser;
     }
 
-    public boolean isSignInValid(int userId, String typedPassword) throws ClassNotFoundException {
+    public boolean isSignInValid(int userId, String typedPassword) throws ClassNotFoundException 
+    {
         String SELECT_AUTHENTICATE_USER_SQL = "SELECT * FROM user WHERE id=? AND password=?";
 
         Class.forName("com.mysql.jdbc.Driver");
 
         boolean flag = false;
-        try (
+        try 
+        {
 
-                
+            sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_AUTHENTICATE_USER_SQL)) 
             preparedStatement.setInt(1, userId);
             preparedStatement.setString(2, typedPassword);
             System.out.println(preparedStatement);
@@ -181,11 +199,14 @@ public class UserDAO extends Thread implements Dao<User> {
 
             rs.next(); //move cursor to last row
 
-            if (rs.getRow() > 0) { //get total row count
+            if (rs.getRow() > 0) 
+            { //get total row count
                 flag = true;
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -196,25 +217,28 @@ public class UserDAO extends Thread implements Dao<User> {
     }
 
     @Override
-    public List<User> getAll() throws ClassNotFoundException {
+    public List<User> getAll() throws ClassNotFoundException 
+    {
         String SELECT_ALLUSERS_SQL = "SELECT * FROM user;";
 
         Class.forName("com.mysql.jdbc.Driver");
 
         List<User> allUsers = new ArrayList<>();
         User retrievedUser = null;
-        try (
+        try 
+        {
 
-                
+            sem = new Semaphore(1);
         	sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLUSERS_SQL)) 
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            while (rs.next()) {
+            while (rs.next()) 
+            {
 
                 int userId = rs.getInt("id");
                 String firstName = rs.getString("firstName");
@@ -240,7 +264,9 @@ public class UserDAO extends Thread implements Dao<User> {
                 allUsers.add(retrievedUser);
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -249,17 +275,19 @@ public class UserDAO extends Thread implements Dao<User> {
         return allUsers;
     }
 
-    public List<User> getAllStudents() throws ClassNotFoundException {
+    public List<User> getAllStudents() throws ClassNotFoundException 
+    {
         String SELECT_ALLSTUDENTS_SQL = "SELECT * FROM user WHERE isAdmin = ?;";
 
         Class.forName("com.mysql.jdbc.Driver");
 
         List<User> allStudents = new ArrayList<>();
         User retrievedUser = null;
-        try (
-
+        try 
+        {
+            sem = new Semaphore(1);
             sem.acquire();    
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLSTUDENTS_SQL)) 
             preparedStatement.setInt(1, 0); //isAdmin of 0 indicates students
             System.out.println(preparedStatement);
 
@@ -267,7 +295,8 @@ public class UserDAO extends Thread implements Dao<User> {
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            while (rs.next()) {
+            while (rs.next()) 
+            {
 
                 int userId = rs.getInt("id");
                 String firstName = rs.getString("firstName");
@@ -293,7 +322,9 @@ public class UserDAO extends Thread implements Dao<User> {
                 allStudents.add(retrievedUser);
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -302,17 +333,19 @@ public class UserDAO extends Thread implements Dao<User> {
         return allStudents;
     }
 
-    public List<User> getAllAdmins() throws ClassNotFoundException {
+    public List<User> getAllAdmins() throws ClassNotFoundException 
+    {
         String SELECT_ALLADMINS_SQL = "SELECT * FROM user WHERE isAdmin = ?;";
 
         Class.forName("com.mysql.jdbc.Driver");
 
         List<User> allAdmins = new ArrayList<>();
         User retrievedUser = null;
-        try (
-
+        try 
+        {
+            sem = new Semaphore(1);
             sem.acquire();	
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLADMINS_SQL)) 
             preparedStatement.setInt(1, 1); //isAdmin of 1 indicates admin
             System.out.println(preparedStatement);
 
@@ -320,7 +353,8 @@ public class UserDAO extends Thread implements Dao<User> {
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            while (rs.next()) {
+            while (rs.next()) 
+            {
 
                 int userId = rs.getInt("id");
                 String firstName = rs.getString("firstName");
@@ -346,7 +380,9 @@ public class UserDAO extends Thread implements Dao<User> {
                 allAdmins.add(retrievedUser);
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);

@@ -9,12 +9,14 @@ import java.util.concurrent.*;
 
 import static soen387.DatabaseConnConstants.CONNECTION;
 
-public class CourseDAO extends Thread implements Dao<Course> {
+public class CourseDAO extends Thread implements Dao<Course> 
+{
 	
 	Semaphore sem;
 
     @Override
-    public void create(Course course) throws ClassNotFoundException {
+    public void create(Course course) throws ClassNotFoundException 
+    {
         String INSERT_COURSE_SQL = "INSERT INTO courses" +
                 "  (courseCode, title, semester, room, startDate, endDate, days, time, instructor) VALUES " +
                 " (?, ?, ?, ?, ?,?,?,?,?);";
@@ -23,27 +25,37 @@ public class CourseDAO extends Thread implements Dao<Course> {
         String endDate = "";
 
         // Logic for start and end date based on semester
-        if (course.getSemester().equals("FALL-2022")) {
+        if (course.getSemester().equals("FALL-2022")) 
+        {
             startDate = "2022-10-09";
             endDate = "2022-12-31";
-        } else if (course.getSemester().equals("WINTER-2023")) {
+        } 
+        else if (course.getSemester().equals("WINTER-2023")) 
+        {
             startDate = "2023-01-05";
             endDate = "2023-04-30";
-        } else if (course.getSemester().equals("SUMMER1-2023")) {
+        } 
+        else if (course.getSemester().equals("SUMMER1-2023")) 
+        {
             startDate = "2023-05-01";
             endDate = "2023-08-31";
-        } else if (course.getSemester().equals("SUMMER2-2023")) {
+        } 
+        else if (course.getSemester().equals("SUMMER2-2023")) 
+        {
             startDate = "2023-06-01";
             endDate = "2023-08-31";
         }
 
         Class.forName("com.mysql.jdbc.Driver");
+	
 
-        try (
+        try 
+        {
              //Step 2:Create a statement using connection object
+		    sem = new Semaphore(1);
              
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(INSERT_COURSE_SQL)) 
 
             preparedStatement.setString(1, course.getCourseCode());
             preparedStatement.setString(2, course.getTitle());
@@ -60,7 +72,9 @@ public class CourseDAO extends Thread implements Dao<Course> {
             preparedStatement.executeUpdate();
             sem.release();
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -73,7 +87,8 @@ public class CourseDAO extends Thread implements Dao<Course> {
     }
 
     @Override
-    public Course get(String idStr) throws ClassNotFoundException {
+    public Course get(String idStr) throws ClassNotFoundException 
+    {
 
         String SELECT_COURSE_SQL = "SELECT * FROM courses" +
                 "  WHERE courseCode = ?; ";
@@ -82,11 +97,14 @@ public class CourseDAO extends Thread implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         Course retrievedCourse = null;
-        try (
+	
+        try 
+        {
              //Step 2:Create a statement using connection object
+		    sem = new Semaphore(1);
              
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL)) 
 
 
             preparedStatement.setString(1, idStr);
@@ -97,7 +115,8 @@ public class CourseDAO extends Thread implements Dao<Course> {
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            if (rs.next()) {
+            if (rs.next()) 
+            {
 
                 String courseCode = idStr;
                 String title = rs.getString("title");
@@ -123,7 +142,9 @@ public class CourseDAO extends Thread implements Dao<Course> {
                 );
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -133,24 +154,28 @@ public class CourseDAO extends Thread implements Dao<Course> {
     }
 
     @Override
-    public List<Course> getAll() throws ClassNotFoundException {
+    public List<Course> getAll() throws ClassNotFoundException 
+    {
         String SELECT_ALLCOURSES_SQL = "SELECT * FROM courses;";
 
         Class.forName("com.mysql.jdbc.Driver");
 
         List<Course> allCourses = new ArrayList<>();
         Course retrievedCourse = null;
-        try (
+        try 
+        {
              //Step 2:Create a statement using connection object
+	        sem = new Semaphore(1);
             sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ALLCOURSES_SQL)) 
             System.out.println(preparedStatement);
 
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
             sem.release();
             
-            while (rs.next()) {
+            while (rs.next()) 
+            {
 
                 String courseCode =  rs.getString("courseCode");;
                 String title = rs.getString("title");
@@ -177,7 +202,9 @@ public class CourseDAO extends Thread implements Dao<Course> {
                 allCourses.add(retrievedCourse);
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
@@ -186,7 +213,8 @@ public class CourseDAO extends Thread implements Dao<Course> {
         return allCourses;
     }
 
-    public boolean isCourseRegisterWithinDateLimit(Course c) throws ClassNotFoundException {
+    public boolean isCourseRegisterWithinDateLimit(Course c) throws ClassNotFoundException 
+    {
 
         String SELECT_COURSE_STARTDATE_SQL = "SELECT startDate" +
                                         "FROM courses c" +
@@ -196,10 +224,12 @@ public class CourseDAO extends Thread implements Dao<Course> {
         Class.forName("com.mysql.jdbc.Driver");
 
         boolean flag = false;
-        try (
+        try 
+        {
              //Step 2:Create a statement using connection object
+	    sem = new Semaphore(1);
             sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) {
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_STARTDATE_SQL)) 
             preparedStatement.setString(1, c.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -209,11 +239,14 @@ public class CourseDAO extends Thread implements Dao<Course> {
 
             rs.last(); //move cursor to last row
 
-            if(rs.getRow() > 0){ //get total row count
+            if(rs.getRow() > 0)
+            { //get total row count
                 flag = true; //we are within the date limit to add the course
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) 
+        {
             // process sql exception
         	sem.release();
             printSQLException(e);
