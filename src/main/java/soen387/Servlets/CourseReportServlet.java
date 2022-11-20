@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import soen387.Course;
@@ -34,12 +35,12 @@ public class CourseReportServlet extends HttpServlet {
 
             // Setting the attribute of the request object which will be later fetched by a JSP page
             request.setAttribute("data", studentsEnrolledInCourse);
+            request.setAttribute("selectedCourseName", courseSelectedForReport.getCourseCode());
 
             // Creating a RequestDispatcher object to dispatch the request to another resource
-            RequestDispatcher rd = request.getRequestDispatcher("test_courseReport.jsp");
-
+            RequestDispatcher rd = request.getRequestDispatcher("CourseReport.jsp");
             rd.forward(request, response);
-
+            
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
@@ -47,6 +48,6 @@ public class CourseReportServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        response.sendRedirect("test_courseReport.jsp");
+
     }
 }

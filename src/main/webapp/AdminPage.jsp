@@ -52,7 +52,7 @@
 
 <!--Course Report Popup-->
     <div class="form-popup" id="coursePopup">
-        <form action="../php/courseReport.php" onsubmit="return validateCode()" method="post">
+        <form action="<%= request.getContextPath() %>/submitCourseReport" onsubmit="return validateCode()" method="post">
             <fieldset>
                 <h2>Course Report</h2>
                 <hr style="width: 100%; text-align: left; margin-left: 0">
@@ -74,7 +74,7 @@
 
 <!--Student Report Popup-->
     <div class="form-popup" id="studentPopup">
-        <form action="../php/studentReport.php" onsubmit="return validateStudent()" method="post">
+        <form action="<%= request.getContextPath() %>/submitStudentReport" onsubmit="return validateStudent()" method="post">
             <fieldset>
                 <h2>Student's Course Report</h2>
                 <hr style="width: 100%; text-align: left; margin-left: 0">
@@ -94,9 +94,9 @@
         </form>
     </div>
 
-<!--New Course Report-->
+<!--Create New Course -->
     <div class="form-popup" id="newPopup">
-        <form action="../php/createCourse.php"  method="post">
+        <form action="<%= request.getContextPath() %>/create"  method="post">
             <fieldset>
                 <h2>Course Creation</h2>
                 <hr style="width: 100%; text-align: left; margin-left: 0">
@@ -105,7 +105,7 @@
                 <ul>
                     <li>
                         <label for="newCode">Course Code</label><br>
-                        <input type="text" name="code" placeholder="Enter a valid Course Code" id="newCode" maxlength="7" size="7" required onfocusout="validateNewCode()">
+                        <input type="text" name="courseCode" placeholder="Enter a valid Course Code" id="newCode" maxlength="7" size="7" required onfocusout="validateNewCode()">
                     </li>
                     <li>
                         <label for="newTitle">Course Title</label><br>
@@ -129,19 +129,19 @@
                     <li>
                         <label>Course Day</label><br>
                             <label for="monday">
-                                <input type="radio" name="weekday" value="Monday" id="monday" required>Monday
+                                <input type="radio" name="days" value="Monday" id="monday" required>Monday
                             </label><br>
                             <label for="tuesday">
-                                <input type="radio" name="weekday" value="Tuesday" id="tuesday">Tuesday
+                                <input type="radio" name="days" value="Tuesday" id="tuesday">Tuesday
                             </label><br>
-                            <label for="wednes">
-                                <input type="radio" name="weekday" value="Wednesday" id="wednes">Wednesday
+                            <label for="wednesday">
+                                <input type="radio" name="days" value="Wednesday" id="wednesday">Wednesday
                             </label><br>
                             <label for="thursday">
-                                <input type="radio" name="weekday" value="Thursday" id="thursday">Thursday
+                                <input type="radio" name="days" value="Thursday" id="thursday">Thursday
                             </label><br>
                             <label for="friday">
-                                <input type="radio" name="weekday" value="Friday" id="friday">Friday
+                                <input type="radio" name="days" value="Friday" id="friday">Friday
                             </label>
                     </li>
                     <li>

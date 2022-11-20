@@ -30,16 +30,18 @@ public class StudentReportServlet extends HttpServlet {
 
         try {
             String studentName = request.getParameter("studentName");
+            String[] splitStudentName = studentName.split(" ");
 
-            User studentSelectedForReport = userDAO.getByFirstNameAndLastName("alex", "smith");
+            User studentSelectedForReport = userDAO.getByFirstNameAndLastName(splitStudentName[0], splitStudentName[1]);
 
             List<Course> coursesEnrolledByStudent = enrollmentDAO.getEnrolledCoursesForStudent(studentSelectedForReport);
 
             // Setting the attribute of the request object which will be later fetched by a JSP page
             request.setAttribute("data", coursesEnrolledByStudent);
+            request.setAttribute("studentName", studentName);
 
             // Creating a RequestDispatcher object to dispatch the request to another resource
-            RequestDispatcher rd = request.getRequestDispatcher("test_studentReport.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("StudentReport.jsp");
 
             rd.forward(request, response);
 
@@ -49,7 +51,5 @@ public class StudentReportServlet extends HttpServlet {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        response.sendRedirect("test_studentReport.jsp");
     }
 }
