@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import jakarta.servlet.http.HttpSession;
 import soen387.Course;
 import soen387.DAO.CourseDAO;
 import soen387.DAO.EnrollmentDAO;
@@ -21,6 +22,8 @@ public class DropCourseServlet extends HttpServlet {
     private UserDAO userDAO;
     private CourseDAO courseDAO;
 
+    private HttpSession session;
+
     public void init() {
         enrollmentDAO = new EnrollmentDAO();
         userDAO = new UserDAO();
@@ -31,10 +34,11 @@ public class DropCourseServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            int currentStudentId = Integer.parseInt(request.getParameter("id"));
+            session = request.getSession();
+            String currentStudentIdStr = (String) session.getAttribute("id");
             String selectedCourse = request.getParameter("dropCode");
 
-            User currentStudent = userDAO.get(currentStudentId);
+            User currentStudent = userDAO.get(Integer.parseInt(currentStudentIdStr));
             Course courseSelectedToDrop = courseDAO.get(selectedCourse);
 
             Enrollment enrollmentToDrop = new Enrollment(currentStudent, courseSelectedToDrop);
@@ -48,6 +52,6 @@ public class DropCourseServlet extends HttpServlet {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
+        response.sendRedirect("test_courseDropped.jsp");
     }
 }
