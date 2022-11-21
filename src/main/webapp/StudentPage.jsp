@@ -51,7 +51,7 @@
         </div>
     <!--drop course popup-->
     <div class="form-popup" id="dropPopup">
-        <form action="../php/dropCourse.php" class="form-container" onsubmit="return validateDropCode()" method="post">
+        <form action="<%= request.getContextPath() %>/dropCourse" class="form-container" onsubmit="return validateDropCode()" method="post">
             <h2>Drop a Class</h2>
             <p>Choose an enrolled course to drop.</p>
             <label for="dropList">List of Enrolled classes</label>
@@ -64,7 +64,7 @@
     </div>
     <!--add course popup-->
     <div class="form-popup" id="addPopup">
-        <form action="../php/registerCourse.php" class="form-container" onsubmit="return validateAddCode()" method="post">
+        <form action="<%= request.getContextPath() %>/addCourse" class="form-container" onsubmit="return validateAddCode()" method="post">
             <h2>Add a Class</h2>
             <p>Select a semester & then choose a course to enroll to.</p>
             <p>A maximum of 5 courses can be enrolled at the same time in the same semester.</p>

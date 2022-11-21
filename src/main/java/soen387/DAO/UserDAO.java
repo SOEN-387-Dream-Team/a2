@@ -127,7 +127,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
     public User getByFirstNameAndLastName(String fName, String lName) throws ClassNotFoundException 
     {
-        String SELECT_COURSE_SQL = "SELECT id FROM user u WHERE u.firstName=? AND u.lastName=?";
+        String SELECT_USER_SQL = "SELECT * FROM user u WHERE u.firstName=? AND u.lastName=?";
 
 
         Class.forName("com.mysql.jdbc.Driver");
@@ -138,7 +138,7 @@ public class UserDAO extends Thread implements Dao<User> {
 
             sem = new Semaphore(1);
         	sem.acquire();
-        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_COURSE_SQL); 
+        	PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_USER_SQL);
 
             preparedStatement.setString(1, fName);
             preparedStatement.setString(2, lName);

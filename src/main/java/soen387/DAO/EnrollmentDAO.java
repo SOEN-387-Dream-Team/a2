@@ -68,13 +68,14 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         boolean courseLimitFlag = false;
         boolean startDateLimitFlag = false;
 
-        String SELECT_ENROLLED_COURSES = "SELECT * FROM student_courses c INNER JOIN courses c ON s.courseCode = c.courseCode WHERE s.id = ? AND c.semester = UPPER(?)";
+        String SELECT_ENROLLED_COURSES = "SELECT * FROM student_courses s INNER JOIN courses c ON s.courseCode = c.courseCode WHERE s.id = ? AND c.semester = UPPER(?)";
         try
         {
         	
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES);
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSES, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getSemester());
             System.out.println(preparedStatement);
@@ -119,13 +120,14 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         boolean startDateLimitFlag = false;
 
         //check to see if we are within the 1 week time limit
-        String SELECT_VALID_COURSE_STARTDATE_SQL = "SELECT startDate FROM courses c WHERE CURDATE() < DATE_ADD(c.startDate, INTERVAL 7 DAYS AND c.courseCode = UPPER(?);";
+        String SELECT_VALID_COURSE_STARTDATE_SQL = "SELECT startDate FROM courses c WHERE CURDATE() < DATE_ADD(c.startDate, INTERVAL 7 DAY) AND c.courseCode = UPPER(?);";
         try 
         {
                
             sem = new Semaphore(1);
             sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL); 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_STARTDATE_SQL, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
@@ -228,7 +230,8 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
                 
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL); 
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_ENROLLED_COURSE_SQL, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             preparedStatement.setInt(1, student.getID());
             preparedStatement.setString(2, course.getCourseCode());
             System.out.println(preparedStatement);
@@ -278,10 +281,11 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
         String SELECT_VALID_COURSE_ENDDATE_SQL = "SELECT * FROM courses c WHERE CURDATE() < c.endDate AND c.courseCODE = UPPER(?);";
         try 
         {
-               
+
             sem = new Semaphore(1);
 	        sem.acquire();
-            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL);
+            PreparedStatement preparedStatement = CONNECTION.prepareStatement(SELECT_VALID_COURSE_ENDDATE_SQL, ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             preparedStatement.setString(1, course.getCourseCode());
             System.out.println(preparedStatement);
 
