@@ -18,7 +18,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
 
     @Override
     //Create an Enrollment --> register a course to a student
-    public void create(Enrollment enrollment) throws ClassNotFoundException 
+    public void create(Enrollment enrollment) throws ClassNotFoundException
     {
         //Conditions that need to be met before registering
         if (isCourseLimitPerSemesterValid(enrollment.getUser(), enrollment.getCourse())) 
@@ -99,6 +99,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             else 
             {
                 System.out.println("Can not enroll to any more classes; max of 5 classes already reached.");
+                throw new RuntimeException();
             }
         } 
         catch (SQLException e)
@@ -149,6 +150,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             else 
             {
                 System.out.println("Could not enroll due to the date restriction.");
+                throw new RuntimeException();
             }
 
         } 
@@ -256,6 +258,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             else
             {
                 System.out.println("Error occurred, Student is not enrolled in this course.");
+                throw new RuntimeException();
             }
 
         } 
@@ -307,6 +310,7 @@ public class EnrollmentDAO extends Thread implements Dao<Enrollment>
             else 
             {
                 System.out.println("Could not drop course due to the end date restriction.");
+                throw new RuntimeException();
             }
 
         } 
