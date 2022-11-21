@@ -40,48 +40,55 @@
     }
     %>
 
-<%=
-        //Display of the results (Table Header)
-         "<div class='row'>" +
-         "<div class='col'>" +
-         "<h1>" + (selectedCourseName) + " Course Report</h1>" +
-         "</div>" +
-         "</div>" +
 
-         "<div class='row'>" +
-         "<div class='col'>" +
-         "<table  class='table table-dark table-striped table-bordered border-light table-hover'>" +
-            "<tr class='table-primary'>" +
-                                "<th>Student ID</th>" +
-                                "<th>First Name</th>" +
-                                "<th>Last Name</th>" +
-                            "</tr>" +
-         "</div>" +
-         "</div>"
-%>
-
-<%--Table Data--%>
-   <% for (User u: studentsEnrolledInCourse) { %>
-           <%=
-            "<tr>" +
-                "<th>" + (u.getID()) + "</th>" +
-                "<th>" + (u.getFirstName())+ "</th>" +
-                "<th>" + (u.getLastName()) + "</th>" +
-            "</tr>"
-            %>
-       <% } %>
-
-<%--    Table Footer with close button --%>
- <%=
-        "</table>" +
-        "<div class='row'>" +
-           "<div class='col'>" +
-           "<a href=''>" %>
+    <% if(studentsEnrolledInCourse.isEmpty()) {%>
             <%=
-            "<button type='button' class='btn btn-primary'>Close Report</button></a>" +
-            "</div>" +
-                    "</div>"
+            "<p class='alert alert-danger'>" +
+                    "No student records found for Course " +  (selectedCourseName) +
+                    "</p>"
             %>
+    <% }
+    else { %>
+            <%=
+                    //Display of the results (Table Header)
+                     "<div class='row'>" +
+                     "<div class='col'>" +
+                     "<h1>" + (selectedCourseName) + " Course Report</h1>" +
+                     "</div>" +
+                     "</div>" +
+
+                     "<div class='row'>" +
+                     "<div class='col'>" +
+                     "<table  class='table table-dark table-striped table-bordered border-light table-hover'>" +
+                        "<tr class='table-primary'>" +
+                                            "<th>Student ID</th>" +
+                                            "<th>First Name</th>" +
+                                            "<th>Last Name</th>" +
+                                        "</tr>" +
+                     "</div>" +
+                     "</div>"
+            %>
+            <%--Table Data--%>
+               <% for (User u: studentsEnrolledInCourse) { %>
+                       <%=
+                        "<tr>" +
+                            "<th>" + (u.getID()) + "</th>" +
+                            "<th>" + (u.getFirstName())+ "</th>" +
+                            "<th>" + (u.getLastName()) + "</th>" +
+                        "</tr>"
+                        %>
+                   <% } %>
+        <%=  "</table>"  %>
+    <% } %>
+
+    <%--   close button --%>
+    <div class='row'>
+        <div class='col'>
+            <form action="<%= request.getContextPath() %>/closeReport"  method="post">
+                <button  class='btn btn-primary' type="submit" value="Submit">Close Report</button>
+            </form>
+        </div>
+    </div>
 
 </div>
 </body>

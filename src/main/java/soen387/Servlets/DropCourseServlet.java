@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import jakarta.servlet.http.HttpSession;
 import soen387.Course;
@@ -32,11 +33,12 @@ public class DropCourseServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        response.setContentType("text/html");
+        PrintWriter pw = response.getWriter();
+        String selectedCourse = request.getParameter("dropCode");
         try {
             session = request.getSession();
             String currentStudentIdStr = (String) session.getAttribute("id");
-            String selectedCourse = request.getParameter("dropCode");
 
             User currentStudent = userDAO.get(Integer.parseInt(currentStudentIdStr));
             Course courseSelectedToDrop = courseDAO.get(selectedCourse);
@@ -44,6 +46,8 @@ public class DropCourseServlet extends HttpServlet {
             Enrollment enrollmentToDrop = new Enrollment(currentStudent, courseSelectedToDrop);
 
             enrollmentDAO.delete(enrollmentToDrop);
+            pw.write("<p> Course " + selectedCourse +  " was dropped </p");
+            response.setHeader("Refresh", "3;url=StudentPage.jsp");
 
 
         } catch (ClassNotFoundException e) {
@@ -51,7 +55,8 @@ public class DropCourseServlet extends HttpServlet {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            pw.write("<p> Course " + selectedCourse +  " was not able to be dropped </p");
+            response.setHeader("Refresh", "3;url=StudentPage.jsp");
         }
-        response.sendRedirect("test_courseDropped.jsp");
     }
 }
